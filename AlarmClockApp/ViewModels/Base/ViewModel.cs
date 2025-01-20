@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace AlarmClockApp.ViewModels.Base
 {
-    internal abstract class ViewModel : INotifyPropertyChanged
+    internal abstract class ViewModel : INotifyPropertyChanged, IDisposable
     {
         public event PropertyChangedEventHandler PropertyChanged;
 
@@ -23,6 +23,21 @@ namespace AlarmClockApp.ViewModels.Base
             field = value;
             OnPropertyChanged(PropertyName);
             return true;
+        }
+
+        public void Dispose()
+        {
+            Dispose(true);
+        }
+        
+        private bool _disposed;
+        protected virtual void Dispose(bool disposing)
+        {
+            if (!disposing || _disposed)
+            {
+                return;
+            }
+            _disposed = true;
         }
     }
 }
