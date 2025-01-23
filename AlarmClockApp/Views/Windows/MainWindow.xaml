@@ -13,7 +13,38 @@
     </Window.DataContext>
     <Window.Resources>
         <vm:MainWindowViewModel x:Key="currentTime" UpdateInterval="00:00:00.100"/>
+
+        <Style TargetType="{x:Type Button}">
+            <Setter Property="Background" Value="Beige"/>
+            <Setter Property="Foreground" Value="Black"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type Button}">
+                        <Border CornerRadius="10" Background="{TemplateBinding Background}">
+                            <Grid>
+                                <Label Content="{TemplateBinding Content}" FontSize="28" 
+                                HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                            </Grid>
+                        </Border>
+
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="Background" Value="#F4B4B4" />
+                                <Setter Property="Foreground" Value="Beige" />
+                            </Trigger>
+
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter Property="Background" Value="#DC9293" />
+                                <Setter Property="Foreground" Value="Beige" />
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        
     </Window.Resources>
+    
     <Grid>
         <Grid.Background>
             <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
@@ -86,30 +117,12 @@
                         </TextBlock.Effect>
                     </TextBlock>
 
-                    <Button Grid.Column="1" Grid.Row="1" Background="Black" BorderBrush="{x:Null}" Margin="5 5 5 10"
+                    <Button Grid.Column="1" Grid.Row="1" Content="Start" BorderBrush="{x:Null}" Margin="5 5 5 10"
                             VerticalAlignment="Top">
-                        <Button.Template>
-                            <ControlTemplate TargetType="Button">
-                                <Grid>
-                                    <Rectangle RadiusX="10" RadiusY="10" Fill="Beige" Height="50" />
-                                    <Label Content="Start" FontSize="28" 
-                                           HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                                </Grid>
-                            </ControlTemplate>
-                        </Button.Template>
                     </Button>
 
-                    <Button Grid.Column="2" Grid.Row="1" Background="Black" BorderBrush="{x:Null}" Margin="5 5 5 10"
+                    <Button Grid.Column="2" Grid.Row="1" Content="Stop" BorderBrush="{x:Null}" Margin="5 5 5 10"
                             VerticalAlignment="Top" Height="50">
-                        <Button.Template>
-                            <ControlTemplate TargetType="Button">
-                                <Grid>
-                                    <Rectangle RadiusX="10" RadiusY="10" Fill="Beige"/>
-                                    <Label Content="Stop" FontSize="28" 
-                                           HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                                </Grid>
-                            </ControlTemplate>
-                        </Button.Template>
                     </Button>
                 </Grid>
             </TabItem>
