@@ -148,7 +148,7 @@
                         <ColumnDefinition></ColumnDefinition>
                     </Grid.ColumnDefinitions>
 
-                    <TextBox Text="00" Grid.Row="0" Grid.Column="1" Margin="0 10 15 5" 
+                    <TextBox Text="{Binding AlarmHours, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Grid.Row="0" Grid.Column="1" Margin="0 10 15 5" 
                         FontSize="80" HorizontalAlignment="Right" VerticalAlignment="Top" Foreground="#F4B4B4" Background="{x:Null}" BorderBrush="{x:Null}" SelectionBrush="{x:Null}">
                         <TextBox.Effect>
                             <DropShadowEffect Color="#DC9293"/>
@@ -162,24 +162,36 @@
                         </TextBlock.Effect>
                     </TextBlock>
 
-                    <TextBox Text="00" Grid.Row="0" Grid.Column="2" Margin="15 10 0 5" 
+                    <TextBox Text="{Binding AlarmMinutes, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Grid.Row="0" Grid.Column="2" Margin="15 10 0 5" 
                     FontSize="80" HorizontalAlignment="Left" VerticalAlignment="Top" Foreground="#F4B4B4" BorderBrush="{x:Null}" Background="{x:Null}" SelectionBrush="{x:Null}">
                         <TextBox.Effect>
                             <DropShadowEffect Color="#DC9293"/>
                         </TextBox.Effect>
                     </TextBox>
-                    
 
-                    <Button Grid.Column="1" Grid.Row="1" Content="Start" BorderBrush="{x:Null}" Margin="5 5 5 10"
-                            VerticalAlignment="Top" Height="50">
+                    <TextBlock Text="Remaining Time:" Grid.Row="1" Grid.Column="1" Margin="0 10 0 5" 
+                        FontSize="36" TextWrapping="Wrap" HorizontalAlignment="Center" VerticalAlignment="Top" Foreground="#F4B4B4">
+                        <TextBlock.Effect>
+                            <DropShadowEffect Color="#DC9293"/>
+                        </TextBlock.Effect>
+                    </TextBlock>
+                    <TextBlock Text="{Binding RemainingTime}" Grid.Row="1" Grid.Column="2" Margin="0 10 0 5" 
+                        FontSize="36" TextWrapping="Wrap" HorizontalAlignment="Center" VerticalAlignment="Top" Foreground="#F4B4B4">
+                        <TextBlock.Effect>
+                            <DropShadowEffect Color="#DC9293"/>
+                        </TextBlock.Effect>
+                    </TextBlock>
+
+                    <Button Grid.Column="1" Grid.Row="1" Content="Start" Command="{Binding StartAlarmCommand}" BorderBrush="{x:Null}" Margin="5 100 5 10"
+                            VerticalAlignment="Center" Height="50">
                     </Button>
 
-                    <Button Grid.Column="2" Grid.Row="1" Content="Reset" BorderBrush="{x:Null}" Margin="5 5 5 10"
-                            VerticalAlignment="Top" Height="50">
+                    <Button Grid.Column="2" Grid.Row="1" Content="Reset" Command="{Binding ResetAlarmCommand}" BorderBrush="{x:Null}" Margin="5 100 5 10"
+                            VerticalAlignment="Center" Height="50">
                     </Button>
                     <DatePicker Grid.Column="1" Grid.ColumnSpan="2" Grid.Row="0" VerticalAlignment="Top" HorizontalAlignment="Center" Margin="0,130,0,0" 
                                 Background="#FFDC9293" BorderBrush="{x:Null}" Foreground="Black" FontSize="36"
-                                SelectedDate="{Binding Date}" Width="226"/>
+                                SelectedDate="{Binding ChosenDate}" Width="226"/>
                     <!--<TextBlock Text="-" FontSize="50"/>-->
 
                 </Grid>
