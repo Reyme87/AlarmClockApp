@@ -32,6 +32,7 @@ namespace AlarmClockApp.ViewModels
         private DispatcherTimer _currentTimer;
         private readonly Timer _timer;
 
+
         public string Clock
         {
             get => _clock;
@@ -197,38 +198,45 @@ namespace AlarmClockApp.ViewModels
 
                 double totalTime = totalHours * 60 * 60 + totalMinutes * 60 - DateTime.Now.Second;
                 double currentDiff, hours, minutes;
-                _countdownTimer.Start();
 
-                try
+                if (totalTime > 0)
                 {
-                    using (_cts = new CancellationTokenSource())
+                    _countdownTimer.Start();
+                    try
                     {
-                        while (_countdownTimer.IsRunning)
+                        using (_cts = new CancellationTokenSource())
                         {
-                            currentDiff = totalTime - _countdownTimer.Elapsed.TotalSeconds;
-                            hours = (int)currentDiff / (60 * 60);
-                            minutes = (int)currentDiff / 60 % 60;
-                            RemainingTime = $"{hours} h. {minutes} m.";
-                            await Task.Delay(1000, _cts.Token);
-
-                            if (_countdownTimer.Elapsed.TotalSeconds >= totalTime)
+                            while (_countdownTimer.IsRunning)
                             {
-                                _countdownTimer.Reset();
-                                RemainingTime = "IT'S TIME!";
-                                _player = new MediaPlayer();
-                                _player.Open(new Uri("D:\\Новая папка\\5606-quagmire-toilet-meme.mp3", UriKind.Relative));
-                                _player.Play();
+                                currentDiff = totalTime - _countdownTimer.Elapsed.TotalSeconds;
+                                hours = (int)currentDiff / (60 * 60);
+                                minutes = (int)currentDiff / 60 % 60;
+                                RemainingTime = $"{hours} h. {minutes} m.";
+                                await Task.Delay(1000, _cts.Token);
+
+                                if (_countdownTimer.Elapsed.TotalSeconds >= totalTime)
+                                {
+                                    _countdownTimer.Reset();
+                                    RemainingTime = "IT'S TIME!";
+                                    _player = new MediaPlayer();
+                                    _player.Open(new Uri("D:\\Новая папка\\5606-quagmire-toilet-meme.mp3", UriKind.Relative));
+                                    _player.Play();
+                                }
                             }
+                            _countdownTimer.Reset();
                         }
-                        _countdownTimer.Reset();
                     }
+                    catch (OperationCanceledException) { }
+                    catch (Exception ex)
+                    {
+                        Debug.Fail(ex.ToString());
+                    }
+                    _cts = null;
                 }
-                catch (OperationCanceledException) { }
-                catch (Exception ex)
+                else
                 {
-                    Debug.Fail(ex.ToString());
+                    RemainingTime = "Error!";
                 }
-                _cts = null;
             }
         }
 
@@ -243,7 +251,7 @@ namespace AlarmClockApp.ViewModels
         private void OnResetAlarmCommandExecuted(object p)
         {
             _countdownTimer.Reset();
-            _player.Stop();
+            _player?.Stop();
             RemainingTime = " ";
             AlarmHours = DateTime.Now.Hour;
             AlarmMinutes = DateTime.Now.Minute;
