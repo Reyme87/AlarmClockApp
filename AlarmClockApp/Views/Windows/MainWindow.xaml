@@ -43,6 +43,7 @@
             </Setter>
         </Style>
 
+        <Image x:Key="resourceImage" Source="/Content/trash can.png" Height="40" Width="40"/>
     </Window.Resources>
 
     <Grid>
@@ -182,6 +183,10 @@
                         </TextBlock.Effect>
                     </TextBlock>
 
+                    <Button Grid.Column="0" Grid.Row="1" Content="Add" Command="{Binding StartAlarmCommand}" BorderBrush="{x:Null}" Margin="5 100 5 10"
+                        VerticalAlignment="Center" Height="50">
+                    </Button>
+
                     <Button Grid.Column="1" Grid.Row="1" Content="Start" Command="{Binding StartAlarmCommand}" BorderBrush="{x:Null}" Margin="5 100 5 10"
                             VerticalAlignment="Center" Height="50">
                     </Button>
@@ -189,10 +194,36 @@
                     <Button Grid.Column="2" Grid.Row="1" Content="Reset" Command="{Binding ResetAlarmCommand}" BorderBrush="{x:Null}" Margin="5 100 5 10"
                             VerticalAlignment="Center" Height="50">
                     </Button>
+
                     <DatePicker Grid.Column="1" Grid.ColumnSpan="2" Grid.Row="0" VerticalAlignment="Top" HorizontalAlignment="Center" Margin="0,130,0,0" 
                                 Background="#FFDC9293" BorderBrush="{x:Null}" Foreground="Black" FontSize="36"
                                 SelectedDate="{Binding ChosenDate}" Width="226"/>
-                    <!--<TextBlock Text="-" FontSize="50"/>-->
+
+                    <Button Grid.Column="3" Grid.Row="1" Content="Save" Command="{Binding AddPresetCommand}" BorderBrush="{x:Null}" Margin="5 100 60 10"
+                            VerticalAlignment="Center" Height="50">
+                    </Button>
+
+                    <ListBox Grid.Column="3" ItemsSource="{Binding Presets}" SelectedItem="{Binding SelectedPreset}" Margin="10,40,10,100" 
+                             FontSize="16" Grid.RowSpan="2" Background="#FFF4B4B4" Foreground="Black" BorderBrush="{x:Null}" FontFamily="Bauhaus 93">
+                        <ListBox.Effect>
+                            <DropShadowEffect Color="#DC9293"/>
+                        </ListBox.Effect>
+                        <ListBox.ItemTemplate>
+                            <DataTemplate>
+                                <Grid>
+                                    <TextBlock Text="{Binding Hour}" Margin="30, 0, 10, 0" HorizontalAlignment="Left" FontSize="36"/>
+                                    <TextBlock Text=":" Margin="30, 0, 10, 0" HorizontalAlignment="Center" FontSize="36"/>
+                                    <TextBlock Text="{Binding Minute}" Margin="90, 0, 10, 0" HorizontalAlignment="Right" FontSize="36"/>
+                                </Grid>
+                            </DataTemplate>
+                        </ListBox.ItemTemplate>
+                    </ListBox>
+                    <TextBlock Grid.Column="3" HorizontalAlignment="Center" Margin="0,-8,0,0" Foreground="#F4B4B4" TextWrapping="Wrap" Text="Presets" VerticalAlignment="Top" FontSize="36">
+                        <TextBlock.Effect>
+                            <DropShadowEffect Color="#DC9293"/>
+                        </TextBlock.Effect>
+                    </TextBlock>
+                    <Button Grid.Column="3" Grid.Row="2" Content="{StaticResource resourceImage}" Command="{Binding RemovePresetCommand}" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="5, 100, 5, 10"/>
 
                 </Grid>
 

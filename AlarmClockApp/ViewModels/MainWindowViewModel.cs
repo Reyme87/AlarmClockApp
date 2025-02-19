@@ -1,10 +1,12 @@
-﻿using System.Diagnostics;
+﻿using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.Media;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Threading;
 using AlarmClockApp.Commands;
+using AlarmClockApp.Models;
 using AlarmClockApp.Properties;
 using AlarmClockApp.ViewModels.Base;
 
@@ -139,6 +141,26 @@ namespace AlarmClockApp.ViewModels
 
         #endregion
 
+        private DatePreset _selectedPreset;
+        private ObservableCollection<DatePreset> _presets;
+
+        public DatePreset SelectedPreset
+        {
+            get => _selectedPreset;
+            set
+            {
+                Set(ref _selectedPreset, value);
+                AlarmHours = Int32.Parse(_selectedPreset.Hour);
+                AlarmMinutes = Int32.Parse(_selectedPreset.Minute);
+                ChosenDate = _selectedPreset.Date;
+            }
+        }
+
+        public ObservableCollection<DatePreset> Presets
+        {
+            get => _presets;
+        }
+
         #region Команды
 
         #region StartStopwatch
@@ -189,10 +211,15 @@ namespace AlarmClockApp.ViewModels
         private async void OnStartAlarmCommandExecuted(object p)
         {
             string[] dateArr = (ChosenDate - DateTime.Now.Date).ToString().Split('.');
-            int diff;
+            int diff;          
             bool isValid = int.TryParse(dateArr[0], out diff);
-            if (diff >= 0 && (!Equals(AlarmMinutes, DateTime.Now.Minute) || !Equals(AlarmHours, DateTime.Now.Hour)))
+            if (diff >= 0)
             {
+                if (AlarmHours * 60 + AlarmMinutes <= DateTime.Now.Hour * 60 + DateTime.Now.Minute && diff == 0)
+                {
+                    diff += 1;
+                    ChosenDate = ChosenDate.AddDays(1);
+                }
                 int totalHours = diff * 24 + AlarmHours - DateTime.Now.Hour;
                 int totalMinutes = AlarmMinutes - DateTime.Now.Minute;
 
@@ -262,6 +289,48 @@ namespace AlarmClockApp.ViewModels
 
         #endregion
 
+        #region AddPreset
+
+        public ICommand AddPresetCommand { get; }
+
+        public void OnAddPresetCommandExecuted(object p)
+        {
+            for (int i = 0; i < Presets.Count; i++)
+            {
+                if (AlarmHours == Int32.Parse(Presets[i].Hour) && AlarmMinutes == Int32.Parse(Presets[i].Minute))
+                {
+                    return;
+                }
+            }
+            DatePreset newPreset;
+            if (AlarmHours * 60 + AlarmMinutes <= DateTime.Now.Hour * 60 + DateTime.Now.Minute && ChosenDate.Day - DateTime.Now.Day == 0)
+            {
+                newPreset = new DatePreset(AlarmHours.ToString(), AlarmMinutes.ToString(), ChosenDate.AddDays(1));
+            }
+            else
+            {
+                newPreset = new DatePreset(AlarmHours.ToString(), AlarmMinutes.ToString(), ChosenDate);
+            }
+            Presets.Add(newPreset);
+        }
+
+        public bool CanAddPresetCommandExecute(object p) => true;
+
+        #endregion
+
+        #region RemovePreset
+
+        public ICommand RemovePresetCommand { get; }
+
+        public void OnRemovePresetCommandExecuted(object p)
+        {
+            Presets.Remove(_selectedPreset);
+        }
+
+        public bool CanRemovePresetCommandExecute(object p) => true;
+
+        #endregion
+
         #endregion
 
         public MainWindowViewModel()
@@ -276,6 +345,10 @@ namespace AlarmClockApp.ViewModels
 
             ResetAlarmCommand = new LambdaCommand(OnResetAlarmCommandExecuted, CanResetAlarmCommandExecute);
 
+            AddPresetCommand = new LambdaCommand(OnAddPresetCommandExecuted, CanAddPresetCommandExecute);
+
+            RemovePresetCommand = new LambdaCommand(OnRemovePresetCommandExecuted, CanRemovePresetCommandExecute);
+
             #endregion
 
             _clock = DateTime.Now.ToString("T");
@@ -286,6 +359,8 @@ namespace AlarmClockApp.ViewModels
             _timer = new Timer(_ => StopwatchTime =
             String.Format("{0:00}:{1:00}.{2:000}", _stopWatch.Elapsed.Minutes, _stopWatch.Elapsed.Seconds, _stopWatch.Elapsed.Milliseconds),
             null, 0, 10);
+
+            _presets = new ObservableCollection<DatePreset>();
         }
     }
 }

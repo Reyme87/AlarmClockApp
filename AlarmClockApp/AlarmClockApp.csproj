@@ -16,7 +16,11 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Models\" />
+    <None Remove="Content\trash can.png" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="Content\trash can.png" />
   </ItemGroup>
 
   <ItemGroup>
