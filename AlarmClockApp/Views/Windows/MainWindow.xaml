@@ -44,6 +44,7 @@
         </Style>
 
         <Image x:Key="resourceImage" Source="/Content/trash can.png" Height="40" Width="40"/>
+        <Image x:Key="resourceImage1" Source="/Content/trash can.png" Height="40" Width="40"/>
     </Window.Resources>
 
     <Grid>
@@ -183,7 +184,7 @@
                         </TextBlock.Effect>
                     </TextBlock>
 
-                    <Button Grid.Column="0" Grid.Row="1" Content="Add" Command="{Binding StartAlarmCommand}" BorderBrush="{x:Null}" Margin="5 100 5 10"
+                    <Button Grid.Column="0" Grid.Row="1" Content="Add" Command="{Binding AddSoundCommand}" BorderBrush="{x:Null}" Margin="5 100 60 10"
                         VerticalAlignment="Center" Height="50">
                     </Button>
 
@@ -217,14 +218,35 @@
                                 </Grid>
                             </DataTemplate>
                         </ListBox.ItemTemplate>
+
                     </ListBox>
                     <TextBlock Grid.Column="3" HorizontalAlignment="Center" Margin="0,-8,0,0" Foreground="#F4B4B4" TextWrapping="Wrap" Text="Presets" VerticalAlignment="Top" FontSize="36">
                         <TextBlock.Effect>
                             <DropShadowEffect Color="#DC9293"/>
                         </TextBlock.Effect>
                     </TextBlock>
-                    <Button Grid.Column="3" Grid.Row="2" Content="{StaticResource resourceImage}" Command="{Binding RemovePresetCommand}" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="5, 100, 5, 10"/>
+                    <Button Grid.Column="3" Grid.Row="1" Content="{StaticResource resourceImage}" Command="{Binding RemovePresetCommand}" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="5, 100, 5, 10"/>
 
+                    <ListBox Grid.Column="0" ItemsSource="{Binding SoundPresets}" SelectedItem="{Binding SelectedSoundPreset}" Margin="10,40,10,100" 
+         FontSize="16" Grid.RowSpan="2" Background="#FFF4B4B4" Foreground="Black" BorderBrush="{x:Null}" FontFamily="Bauhaus 93">
+                        <ListBox.Effect>
+                            <DropShadowEffect Color="#DC9293"/>
+                        </ListBox.Effect>
+                        <ListBox.ItemTemplate>
+                            <DataTemplate>
+                                <Grid>
+                                    <TextBlock Text="{Binding Name}" Margin="0, 0, 50, 0"  FontSize="36"/>
+                                </Grid>
+                            </DataTemplate>
+                        </ListBox.ItemTemplate>
+
+                    </ListBox>
+                    <TextBlock Grid.Column="0" HorizontalAlignment="Center" Margin="0,-8,0,0" Foreground="#F4B4B4" TextWrapping="Wrap" Text="Sounds" VerticalAlignment="Top" FontSize="36">
+                        <TextBlock.Effect>
+                            <DropShadowEffect Color="#DC9293"/>
+                        </TextBlock.Effect>
+                    </TextBlock>
+                    <Button Grid.Column="0" Grid.Row="1" Content="{StaticResource ResourceKey=resourceImage1}" Command="{Binding RemoveSoundCommand}" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="5, 100, 5, 10"/>
                 </Grid>
 
             </TabItem>
