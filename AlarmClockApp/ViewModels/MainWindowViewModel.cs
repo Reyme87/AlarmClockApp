@@ -9,6 +9,7 @@ using AlarmClockApp.Commands;
 using AlarmClockApp.Models;
 using AlarmClockApp.Properties;
 using AlarmClockApp.ViewModels.Base;
+using Microsoft.Win32;
 
 namespace AlarmClockApp.ViewModels
 {
@@ -161,6 +162,23 @@ namespace AlarmClockApp.ViewModels
             get => _presets;
         }
 
+        private SoundPreset _selectedSoundPreset;
+        private ObservableCollection<SoundPreset> _soundPresets;
+
+        public SoundPreset SelectedSoundPreset
+        {
+            get => _selectedSoundPreset;
+            set
+            {
+                Set(ref _selectedSoundPreset, value);
+            }
+        }
+
+        public ObservableCollection<SoundPreset> SoundPresets
+        {
+            get => _soundPresets;
+        }
+
         #region Команды
 
         #region StartStopwatch
@@ -246,7 +264,15 @@ namespace AlarmClockApp.ViewModels
                                     _countdownTimer.Reset();
                                     RemainingTime = "IT'S TIME!";
                                     _player = new MediaPlayer();
-                                    _player.Open(new Uri("D:\\Новая папка\\5606-quagmire-toilet-meme.mp3", UriKind.Relative));
+                                    if (SoundPresets.Count != 0)
+                                    {
+                                        _player.Open(new Uri(SelectedSoundPreset.Path));
+                                    }
+                                    else
+                                    {
+                                        _player.Open(new Uri("D:\\Новая папка\\5606-quagmire-toilet-meme.mp3", UriKind.Relative));
+                                    }
+
                                     _player.Play();
                                 }
                             }
@@ -331,6 +357,53 @@ namespace AlarmClockApp.ViewModels
 
         #endregion
 
+        #region AddSound
+
+        public ICommand AddSoundCommand { get; }
+
+        public void OnAddSoundCommandExecuted(object p)
+        {
+            OpenFileDialog ofd = new OpenFileDialog();
+            SoundPreset soundPreset;
+            ofd.Title = "Выбор звука";
+            ofd.Filter = "Файлы (*.wav, *.mp3, *.m4a)|*.wav, *.mp3, *.m4a";
+
+            if (ofd.ShowDialog() == true)
+            {
+                string fileName = ofd.SafeFileName;
+                string path = ofd.FileName;
+                fileName = fileName.Replace(".m4a", "").Replace(".mp3", "").Replace(".wav", "");
+
+                for (int i = 0; i < SoundPresets.Count; i++)
+                {
+                    if (SoundPresets[i].Name == fileName)
+                    {
+                        return;
+                    }
+                }
+                
+                soundPreset = new SoundPreset(path, fileName);
+                SoundPresets.Add(soundPreset);
+            }
+        }
+
+        public bool CanAddSoundCommandExecute(object p) => !_countdownTimer.IsRunning;
+
+        #endregion
+
+        #region RemoveSound
+
+        public ICommand RemoveSoundCommand { get; }
+
+        public void OnRemoveSoundCommandExecuted(object p)
+        {
+            SoundPresets.Remove(_selectedSoundPreset);
+        }
+
+        public bool CanRemoveSoundCommandExecute(object p) => !_countdownTimer.IsRunning;
+
+        #endregion
+
         #endregion
 
         public MainWindowViewModel()
@@ -349,6 +422,10 @@ namespace AlarmClockApp.ViewModels
 
             RemovePresetCommand = new LambdaCommand(OnRemovePresetCommandExecuted, CanRemovePresetCommandExecute);
 
+            AddSoundCommand = new LambdaCommand(OnAddSoundCommandExecuted, CanAddSoundCommandExecute);
+
+            RemoveSoundCommand = new LambdaCommand(OnRemoveSoundCommandExecuted, CanRemoveSoundCommandExecute);
+
             #endregion
 
             _clock = DateTime.Now.ToString("T");
@@ -361,6 +438,7 @@ namespace AlarmClockApp.ViewModels
             null, 0, 10);
 
             _presets = new ObservableCollection<DatePreset>();
+            _soundPresets = new ObservableCollection<SoundPreset>();
         }
     }
 }

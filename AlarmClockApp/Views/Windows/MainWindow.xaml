@@ -45,6 +45,7 @@
 
         <Image x:Key="resourceImage" Source="/Content/trash can.png" Height="40" Width="40"/>
         <Image x:Key="resourceImage1" Source="/Content/trash can.png" Height="40" Width="40"/>
+
     </Window.Resources>
 
     <Grid>
