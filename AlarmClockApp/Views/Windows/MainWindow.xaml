@@ -5,6 +5,9 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:vm="clr-namespace:AlarmClockApp.ViewModels"
         xmlns:local="clr-namespace:AlarmClockApp"
+        
+        xmlns:p="clr-namespace:AlarmClockApp.Properties"
+        
         mc:Ignorable="d"
         Title="{Binding Path=Title}"
         Height="450" Width="800" Background="#FFF2F3EE" ResizeMode="NoResize">
@@ -151,7 +154,7 @@
                         <ColumnDefinition></ColumnDefinition>
                     </Grid.ColumnDefinitions>
 
-                    <TextBox Text="{Binding AlarmHours, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Grid.Row="0" Grid.Column="1" Margin="0 10 15 5" 
+                    <TextBox Text="{Binding AlarmHours, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, StringFormat={}{0:D2}}" Grid.Row="0" Grid.Column="1" Margin="0 10 15 5" 
                         FontSize="80" HorizontalAlignment="Right" VerticalAlignment="Top" Foreground="#F4B4B4" Background="{x:Null}" BorderBrush="{x:Null}" SelectionBrush="{x:Null}">
                         <TextBox.Effect>
                             <DropShadowEffect Color="#DC9293"/>
@@ -165,7 +168,7 @@
                         </TextBlock.Effect>
                     </TextBlock>
 
-                    <TextBox Text="{Binding AlarmMinutes, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Grid.Row="0" Grid.Column="2" Margin="15 10 0 5" 
+                    <TextBox Text="{Binding AlarmMinutes, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, StringFormat={}{0:D2}}" Grid.Row="0" Grid.Column="2" Margin="15 10 0 5" 
                     FontSize="80" HorizontalAlignment="Left" VerticalAlignment="Top" Foreground="#F4B4B4" BorderBrush="{x:Null}" Background="{x:Null}" SelectionBrush="{x:Null}">
                         <TextBox.Effect>
                             <DropShadowEffect Color="#DC9293"/>
