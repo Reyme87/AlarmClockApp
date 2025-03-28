@@ -1,15 +1,18 @@
-﻿using System.Collections.ObjectModel;
+﻿using System;
+using System.Collections.ObjectModel;
 using System.Diagnostics;
+using System.IO;
 using System.Media;
+using System.Text.Json;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Threading;
 using AlarmClockApp.Commands;
 using AlarmClockApp.Models;
-using AlarmClockApp.Properties;
 using AlarmClockApp.ViewModels.Base;
 using Microsoft.Win32;
+using Newtonsoft.Json;
 
 namespace AlarmClockApp.ViewModels
 {
@@ -142,6 +145,8 @@ namespace AlarmClockApp.ViewModels
 
         #endregion
 
+        #region Колекции пресетов
+
         private DatePreset _selectedPreset;
         private ObservableCollection<DatePreset> _presets;
 
@@ -151,15 +156,28 @@ namespace AlarmClockApp.ViewModels
             set
             {
                 Set(ref _selectedPreset, value);
-                AlarmHours = Int32.Parse(_selectedPreset.Hour);
-                AlarmMinutes = Int32.Parse(_selectedPreset.Minute);
-                ChosenDate = _selectedPreset.Date;
+                if (_selectedPreset != null)
+                {
+                    AlarmHours = Int32.Parse(_selectedPreset.Hour);
+                    AlarmMinutes = Int32.Parse(_selectedPreset.Minute);
+                    ChosenDate = _selectedPreset.Date;
+                }
+                else
+                {
+                    AlarmHours = DateTime.Now.Hour;
+                    AlarmMinutes = DateTime.Now.Minute;
+                    ChosenDate = DateTime.Now.Date;
+                }
             }
         }
 
         public ObservableCollection<DatePreset> Presets
         {
             get => _presets;
+            set
+            {
+                Set(ref _presets, value);
+            }
         }
 
         private SoundPreset _selectedSoundPreset;
@@ -177,7 +195,13 @@ namespace AlarmClockApp.ViewModels
         public ObservableCollection<SoundPreset> SoundPresets
         {
             get => _soundPresets;
+            set
+            {
+                Set(ref _soundPresets, value);
+            }
         }
+
+        #endregion
 
         #region Команды
 
@@ -229,7 +253,7 @@ namespace AlarmClockApp.ViewModels
         private async void OnStartAlarmCommandExecuted(object p)
         {
             string[] dateArr = (ChosenDate - DateTime.Now.Date).ToString().Split('.');
-            int diff;          
+            int diff;
             bool isValid = int.TryParse(dateArr[0], out diff);
             if (diff >= 0)
             {
@@ -267,6 +291,7 @@ namespace AlarmClockApp.ViewModels
                                     if (SoundPresets.Count != 0)
                                     {
                                         _player.Open(new Uri(SelectedSoundPreset.Path));
+                                        
                                     }
                                     else
                                     {
@@ -338,6 +363,7 @@ namespace AlarmClockApp.ViewModels
                 newPreset = new DatePreset(AlarmHours.ToString(), AlarmMinutes.ToString(), ChosenDate);
             }
             Presets.Add(newPreset);
+            LoadInfo(Presets);
         }
 
         public bool CanAddPresetCommandExecute(object p) => true;
@@ -351,6 +377,7 @@ namespace AlarmClockApp.ViewModels
         public void OnRemovePresetCommandExecuted(object p)
         {
             Presets.Remove(_selectedPreset);
+            LoadInfo(Presets);
         }
 
         public bool CanRemovePresetCommandExecute(object p) => true;
@@ -366,7 +393,7 @@ namespace AlarmClockApp.ViewModels
             OpenFileDialog ofd = new OpenFileDialog();
             SoundPreset soundPreset;
             ofd.Title = "Выбор звука";
-            ofd.Filter = "Файлы (*.wav, *.mp3, *.m4a)|*.wav, *.mp3, *.m4a";
+            ofd.Filter = "Файлы (*.WAV, *.MP3, *.M4A)|*.wav;*.mp3;*.m4a";
 
             if (ofd.ShowDialog() == true)
             {
@@ -381,9 +408,10 @@ namespace AlarmClockApp.ViewModels
                         return;
                     }
                 }
-                
+
                 soundPreset = new SoundPreset(path, fileName);
                 SoundPresets.Add(soundPreset);
+                LoadInfo(SoundPresets);
             }
         }
 
@@ -398,6 +426,7 @@ namespace AlarmClockApp.ViewModels
         public void OnRemoveSoundCommandExecuted(object p)
         {
             SoundPresets.Remove(_selectedSoundPreset);
+            LoadInfo(SoundPresets);
         }
 
         public bool CanRemoveSoundCommandExecute(object p) => !_countdownTimer.IsRunning;
@@ -439,6 +468,37 @@ namespace AlarmClockApp.ViewModels
 
             _presets = new ObservableCollection<DatePreset>();
             _soundPresets = new ObservableCollection<SoundPreset>();
+
+            using (FileStream fs = new FileStream("dates.json", FileMode.OpenOrCreate))
+            {
+                FileInfo fileInfo = new FileInfo("dates.json");
+                if (fileInfo.Length != 0)
+                {
+                    Presets = System.Text.Json.JsonSerializer.Deserialize<ObservableCollection<DatePreset>>(fs);
+                }
+                
+            }
+
+            using (FileStream fs = new FileStream("sounds.json", FileMode.OpenOrCreate))
+            {
+                FileInfo fileInfo = new FileInfo("sounds.json");
+                if (fileInfo.Length != 0)
+                {
+                    SoundPresets = System.Text.Json.JsonSerializer.Deserialize<ObservableCollection<SoundPreset>>(fs);
+                }
+            }
+        }
+
+        private async void LoadInfo(ObservableCollection<DatePreset> preset)
+        {
+            string json = JsonConvert.SerializeObject(preset, Formatting.Indented);
+            File.WriteAllText("dates.json", json);
+        }
+
+        private async void LoadInfo(ObservableCollection<SoundPreset> preset)
+        {
+            string json = JsonConvert.SerializeObject(preset, Formatting.Indented);
+            File.WriteAllText("sounds.json", json);
         }
     }
 }
