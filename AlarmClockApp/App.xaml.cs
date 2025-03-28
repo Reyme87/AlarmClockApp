@@ -1,4 +1,5 @@
-﻿using System.Configuration;
+﻿using AlarmClockApp.Properties;
+using System.Configuration;
 using System.Data;
 using System.Windows;
 
