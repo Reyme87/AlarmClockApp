@@ -16,6 +16,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Remove="Content\Alarm.wav" />
     <None Remove="Content\trash can.png" />
   </ItemGroup>
 
@@ -24,6 +25,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Resource Include="Content\Alarm.wav" />
     <Resource Include="Content\trash can.png" />
   </ItemGroup>
 

@@ -295,7 +295,7 @@ namespace AlarmClockApp.ViewModels
                                     }
                                     else
                                     {
-                                        _player.Open(new Uri("D:\\Новая папка\\5606-quagmire-toilet-meme.mp3", UriKind.Relative));
+                                        _player.Open(new Uri("D:\\Visual Studio\\Projects\\AlarmClockApp\\AlarmClockApp\\Content\\Alarm.wav", UriKind.Relative));
                                     }
 
                                     _player.Play();
