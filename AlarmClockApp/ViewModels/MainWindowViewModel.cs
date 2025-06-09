@@ -288,7 +288,7 @@ namespace AlarmClockApp.ViewModels
                                     _countdownTimer.Reset();
                                     RemainingTime = "IT'S TIME!";
                                     _player = new MediaPlayer();
-                                    if (SoundPresets.Count != 0)
+                                    if (SelectedSoundPreset != null)
                                     {
                                         _player.Open(new Uri(SelectedSoundPreset.Path));
                                         
@@ -489,13 +489,13 @@ namespace AlarmClockApp.ViewModels
             }
         }
 
-        private async void LoadInfo(ObservableCollection<DatePreset> preset)
+        private void LoadInfo(ObservableCollection<DatePreset> preset)
         {
             string json = JsonConvert.SerializeObject(preset, Formatting.Indented);
             File.WriteAllText("dates.json", json);
         }
 
-        private async void LoadInfo(ObservableCollection<SoundPreset> preset)
+        private void LoadInfo(ObservableCollection<SoundPreset> preset)
         {
             string json = JsonConvert.SerializeObject(preset, Formatting.Indented);
             File.WriteAllText("sounds.json", json);

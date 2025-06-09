@@ -10,7 +10,7 @@
         
         mc:Ignorable="d"
         Title="{Binding Path=Title}"
-        Height="450" Width="800" Background="#FFF2F3EE" ResizeMode="NoResize">
+        Height="450" Width="800" Background="#FFF2F3EE" ResizeMode="CanMinimize">
     <Window.DataContext>
         <vm:MainWindowViewModel/>
     </Window.DataContext>
